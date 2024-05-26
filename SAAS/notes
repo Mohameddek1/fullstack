@@ -1,0 +1,6 @@
+django
+stripe
+psycopg2-binary
+django-cors-headers
+ngrok.com/download
+https://05ac-41-81-77-153.ngrok-free.app/payment/stripe/webhook

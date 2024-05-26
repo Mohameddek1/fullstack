@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if user.is_authenticated %}
+    <!-- Button to create a new course -->
+    <div class="d-flex justify-content-center">
+      <a class="btn btn-primary mb-3 col-md-6" href="{% url 'create_course' %}">Create New Course</a>
+    </div>
+  {% endif %}
+
+  <h2 class="mb-4">Courses</h2>
+
+  <!-- Error message display -->
+  {% if error_message %}
+    <div class="alert alert-danger" role="alert">
+      {{ error_message }}
+    </div>
+  {% endif %}
+
+  <div class="courses-grid">
+    {% for course in courses %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title text-primary">{{ course.title }}</h5>
+        <p class="card-text text-muted">{{ course.price }} USD</p>
+        <p class="card-text text-muted">{{ course.content }}</p>
+        <div class="mt-auto">
+          {% if course.is_unlocked %}
+            <a class="btn btn-success view-course-btn" href="{% url 'course_detail' course.id %}">View Course</a>
+            {% if user.is_superuser %}
+              <form action="{% url 'delete_course' course.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger delete-course-btn">Delete</button>
+              </form>
+            {% endif %}
+          {% else %}
+            <a class="btn btn-danger" href="{% url 'create_checkout_session' course.id %}">Buy Course</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <style>
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-gap: 20px;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+      height: auto; /* Dynamic height */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-body {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+
+    .card-text {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      width: 100%;
+    }
+
+    /* Button styles */
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #218838;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+
+    /* Style for View Course button */
+    .view-course-btn {
+      margin-top: 10px;
+    }
+
+    /* Style for Delete button */
+    .delete-course-btn {
+      margin-top: 10px;
+    }
+  </style>
+{% endblock %}
